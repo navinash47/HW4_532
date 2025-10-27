@@ -1,2 +1,5 @@
-spendreport/FraudDetector.class
+spendreport/DetailedAlertSink.class
 spendreport/FraudDetectionJob.class
+spendreport/DetailedAlert.class
+spendreport/DetailedTransaction.class
+spendreport/FraudDetector.class
