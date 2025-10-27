@@ -20,6 +20,7 @@ frauddetection/
 │   ├── DetailedTransactionSourceRandomTestJob.java # Task 3 - Test job for random
 │   ├── DetailedFraudDetector.java       # Task 4 - Enhanced fraud detector
 │   ├── DetailedFraudDetectorTestJob.java # Task 4 - Test job for fraud detector
+│   ├── DetailedFraudDetectionJob.java   # Task 5 - Complete integrated system
 │   ├── FraudDetectionJob.java           # Original job
 │   └── FraudDetector.java               # Original detector
 ├── src/main/resources/
@@ -165,6 +166,29 @@ Create a DetailedFraudDetector class that implements enhanced fraud detection lo
 
 ---
 
+## Task 5: DetailedFraudDetectionJob Class
+
+### Objective
+Create a DetailedFraudDetectionJob class that integrates all the new classes (DetailedTransaction, DetailedAlert, DetailedTransactionSource, DetailedFraudDetector) to provide a complete location-based fraud detection system.
+
+### Implementation Details
+- **File**: `src/main/java/spendreport/DetailedFraudDetectionJob.java`
+- **Integration**: Uses all Task 1-4 classes together
+- **Data Flow**: DetailedTransactionSource → DetailedFraudDetector → DetailedAlertSink
+
+### Complete System Architecture
+1. **Data Source**: DetailedTransactionSource generates random transactions
+2. **Processing**: DetailedFraudDetector analyzes transactions for fraud patterns
+3. **Output**: DetailedAlertSink logs fraud alerts with detailed information
+
+### Key Features
+- **End-to-End Integration**: Complete fraud detection pipeline
+- **Real-time Processing**: Continuous stream processing of transactions
+- **Location-based Detection**: Uses zip code information for enhanced accuracy
+- **Comprehensive Logging**: Detailed fraud alerts with all relevant information
+
+---
+
 ## Commands & Usage
 
 ### General Commands
@@ -304,6 +328,31 @@ timeout 60s java --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED -
 
 ---
 
+### Task 5: DetailedFraudDetectionJob Class
+
+#### Run Complete Fraud Detection System
+```bash
+cd /home/anandyala/acads/532/HW-4/frauddetection
+timeout 60s java --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED -cp "target/classes:$(mvn dependency:build-classpath -q -Dmdep.outputFile=/dev/stdout)" spendreport.DetailedFraudDetectionJob
+```
+
+#### Run Extended Test (2+ minutes for fraud detection)
+```bash
+cd /home/anandyala/acads/532/HW-4/frauddetection
+timeout 120s java --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED -cp "target/classes:$(mvn dependency:build-classpath -q -Dmdep.outputFile=/dev/stdout)" spendreport.DetailedFraudDetectionJob
+```
+
+#### Verify Complete System Integration
+```bash
+# Expected output should show:
+# - Random transaction generation
+# - Small transaction detection messages
+# - FRAUD DETECTED messages for valid patterns
+# - DetailedAlertSink logging with account, timestamp, zip, amount
+```
+
+---
+
 ### Combined Task Testing
 
 #### Test All Tasks Together (when DetailedFraudDetectionJob is ready)
@@ -357,6 +406,13 @@ FRAUD DETECTED - Account: 3, Small Amount: $0.25, Large Amount: $800.0, Zip: 787
 Small transaction detected - Account: 1, Amount: $0.75, Zip: 01003, Timestamp: 8000
 FRAUD DETECTED - Account: 1, Small Amount: $0.75, Large Amount: $900.0, Zip: 01003
 15:49:33,607 INFO  spendreport.DetailedAlertSink - FRAUD DETECTED - Account: 1, Timestamp: 9000, Zip: 01003, Amount: $900.0
+```
+
+### Complete System Output (Task 5)
+```
+Small transaction detected - Account: 5, Amount: $0.2259435431079757, Zip: 78712, Timestamp: 1761594965794
+FRAUD DETECTED - Account: 5, Small Amount: $0.2259435431079757, Large Amount: $980.0995459896936, Zip: 78712
+15:56:13,823 INFO  spendreport.DetailedAlertSink - FRAUD DETECTED - Account: 5, Timestamp: 1761594973794, Zip: 78712, Amount: $980.0995459896936
 ```
 
 ---
@@ -447,6 +503,6 @@ The project is ready for the remaining tasks:
 
 ---
 
-**Project Status**: Tasks 1, 2, 3, 4 Complete ✅  
-**Ready for**: Task 5  
+**Project Status**: All Tasks Complete ✅  
+**Tasks Completed**: 1, 2, 3, 4, 5  
 **Last Updated**: October 27, 2025

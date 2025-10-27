@@ -11,3 +11,4 @@ spendreport/DetailedAlertSink.class
 spendreport/FraudDetectionJob.class
 spendreport/FraudDetector.class
 spendreport/DetailedTransactionSourceRandomTestJob.class
+spendreport/DetailedFraudDetectionJob.class
