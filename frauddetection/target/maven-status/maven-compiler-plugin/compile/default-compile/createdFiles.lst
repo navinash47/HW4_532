@@ -2,10 +2,12 @@ spendreport/DetailedTransactionSourceRandomTestJob$1.class
 spendreport/DetailedTransactionSourceTestJob$1.class
 spendreport/DetailedTransactionSourceTest.class
 spendreport/DetailedTransactionSource.class
-spendreport/DetailedAlertSink.class
-spendreport/FraudDetectionJob.class
+spendreport/DetailedFraudDetectorTestJob.class
 spendreport/DetailedAlert.class
+spendreport/DetailedFraudDetector.class
 spendreport/DetailedTransaction.class
 spendreport/DetailedTransactionSourceTestJob.class
+spendreport/DetailedAlertSink.class
+spendreport/FraudDetectionJob.class
 spendreport/FraudDetector.class
 spendreport/DetailedTransactionSourceRandomTestJob.class

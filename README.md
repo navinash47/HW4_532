@@ -18,6 +18,8 @@ frauddetection/
 │   ├── DetailedTransactionSourceTest.java # Task 3 - Hand-crafted test source
 │   ├── DetailedTransactionSourceTestJob.java # Task 3 - Test job for hand-crafted
 │   ├── DetailedTransactionSourceRandomTestJob.java # Task 3 - Test job for random
+│   ├── DetailedFraudDetector.java       # Task 4 - Enhanced fraud detector
+│   ├── DetailedFraudDetectorTestJob.java # Task 4 - Test job for fraud detector
 │   ├── FraudDetectionJob.java           # Original job
 │   └── FraudDetector.java               # Original detector
 ├── src/main/resources/
@@ -134,6 +136,35 @@ Create a DetailedTransactionSource that randomly generates DetailedTransaction i
 
 ---
 
+## Task 4: DetailedFraudDetector Class
+
+### Objective
+Create a DetailedFraudDetector class that implements enhanced fraud detection logic using zip code information. The detector identifies fraudulent transactions based on the pattern: small transaction (< $10) followed by large transaction (≥ $500) from the same account in the same zip code within 1 minute.
+
+### Implementation Details
+- **File**: `src/main/java/spendreport/DetailedFraudDetector.java`
+- **Interface**: Extends `KeyedProcessFunction<Long, DetailedTransaction, DetailedAlert>`
+- **State Management**: Tracks small transactions with account, zip code, amount, and timer
+
+### Enhanced Fraud Detection Logic
+- **Small Transaction**: < $10 (updated from < $1)
+- **Large Transaction**: ≥ $500
+- **Time Window**: 1 minute
+- **Zip Code Matching**: Both transactions must be in the same zip code
+- **Account Matching**: Both transactions must be from the same account
+
+### Key Features
+1. **State Variables**: flagState, zipCodeState, amountState, timerState
+2. **Zip Code Validation**: Only triggers alerts when small and large transactions are in the same zip
+3. **Timer Management**: 1-minute timeout for small transactions
+4. **Debug Logging**: Detailed console output for monitoring fraud detection
+5. **State Cleanup**: Proper cleanup when fraud is detected or timer expires
+
+### Test Job
+- **DetailedFraudDetectorTestJob.java**: Test job using hand-crafted data to verify fraud detection logic
+
+---
+
 ## Commands & Usage
 
 ### General Commands
@@ -239,6 +270,40 @@ timeout 120s java --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED 
 
 ---
 
+### Task 4: DetailedFraudDetector Class
+
+#### Test DetailedFraudDetector with Hand-crafted Data
+```bash
+cd /home/anandyala/acads/532/HW-4/frauddetection
+timeout 30s java --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED -cp "target/classes:$(mvn dependency:build-classpath -q -Dmdep.outputFile=/dev/stdout)" spendreport.DetailedFraudDetectorTestJob
+```
+
+#### Verify Fraud Detection Logic
+```bash
+# Expected output should show:
+# - Small transaction detection messages
+# - FRAUD DETECTED messages for valid patterns
+# - DetailedAlertSink logging with account, timestamp, zip, amount
+```
+
+#### Test Fraud Detection with Random Data
+```bash
+cd /home/anandyala/acads/532/HW-4/frauddetection
+timeout 60s java --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED -cp "target/classes:$(mvn dependency:build-classpath -q -Dmdep.outputFile=/dev/stdout)" spendreport.DetailedFraudDetectorTestJob
+```
+
+#### Verify Fraud Detection Properties
+```bash
+# Check that fraud detection works correctly:
+# - Small transactions: < $10
+# - Large transactions: >= $500
+# - Same account: Both transactions from same account
+# - Same zip code: Both transactions in same zip code
+# - Time window: Within 1 minute
+```
+
+---
+
 ### Combined Task Testing
 
 #### Test All Tasks Together (when DetailedFraudDetectionJob is ready)
@@ -277,6 +342,21 @@ Random Transaction: DetailedTransaction{accountId=1, amount=475.31, timestamp=17
 Random Transaction: DetailedTransaction{accountId=1, amount=646.79, timestamp=1761593898791, zipCode='78712'}
 Random Transaction: DetailedTransaction{accountId=1, amount=70.44, timestamp=1761593899791, zipCode='02115'}
 Random Transaction: DetailedTransaction{accountId=5, amount=728.82, timestamp=1761593900791, zipCode='01003'}
+```
+
+### DetailedFraudDetector Output (Task 4)
+```
+Small transaction detected - Account: 1, Amount: $0.5, Zip: 01003, Timestamp: 1000
+FRAUD DETECTED - Account: 1, Small Amount: $0.5, Large Amount: $750.0, Zip: 01003
+15:49:21,592 INFO  spendreport.DetailedAlertSink - FRAUD DETECTED - Account: 1, Timestamp: 3000, Zip: 01003, Amount: $750.0
+
+Small transaction detected - Account: 3, Amount: $0.25, Zip: 78712, Timestamp: 4000
+FRAUD DETECTED - Account: 3, Small Amount: $0.25, Large Amount: $800.0, Zip: 78712
+15:49:27,599 INFO  spendreport.DetailedAlertSink - FRAUD DETECTED - Account: 3, Timestamp: 6000, Zip: 78712, Amount: $800.0
+
+Small transaction detected - Account: 1, Amount: $0.75, Zip: 01003, Timestamp: 8000
+FRAUD DETECTED - Account: 1, Small Amount: $0.75, Large Amount: $900.0, Zip: 01003
+15:49:33,607 INFO  spendreport.DetailedAlertSink - FRAUD DETECTED - Account: 1, Timestamp: 9000, Zip: 01003, Amount: $900.0
 ```
 
 ---
@@ -367,6 +447,6 @@ The project is ready for the remaining tasks:
 
 ---
 
-**Project Status**: Tasks 1, 2, 3 Complete ✅  
-**Ready for**: Tasks 4, 5  
+**Project Status**: Tasks 1, 2, 3, 4 Complete ✅  
+**Ready for**: Task 5  
 **Last Updated**: October 27, 2025
