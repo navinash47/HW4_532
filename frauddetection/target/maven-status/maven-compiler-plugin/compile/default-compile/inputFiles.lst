@@ -1,2 +1,6 @@
+/home/anandyala/acads/532/HW-4/frauddetection/src/main/java/spendreport/DetailedTransactionSource.java
+/home/anandyala/acads/532/HW-4/frauddetection/src/main/java/spendreport/DetailedAlert.java
 /home/anandyala/acads/532/HW-4/frauddetection/src/main/java/spendreport/FraudDetectionJob.java
+/home/anandyala/acads/532/HW-4/frauddetection/src/main/java/spendreport/DetailedTransaction.java
 /home/anandyala/acads/532/HW-4/frauddetection/src/main/java/spendreport/FraudDetector.java
+/home/anandyala/acads/532/HW-4/frauddetection/src/main/java/spendreport/DetailedAlertSink.java
