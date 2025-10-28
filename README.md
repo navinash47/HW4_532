@@ -1,6 +1,6 @@
-# Advanced Fraud Detection Algorithm - Tasks 1, 2, 3
+# Advanced Fraud Detection Algorithm - Tasks 1, 2, 3, 4, 5 ✅
 
-This project extends the basic Flink DataStream API fraud detection tutorial by adding location-based fraud detection using zip code information.
+This project extends the basic Flink DataStream API fraud detection tutorial by adding location-based fraud detection using zip code information. All tasks have been completed successfully.
 
 ## Project Overview
 
@@ -18,9 +18,12 @@ frauddetection/
 │   ├── DetailedTransactionSourceTest.java # Task 3 - Hand-crafted test source
 │   ├── DetailedTransactionSourceTestJob.java # Task 3 - Test job for hand-crafted
 │   ├── DetailedTransactionSourceRandomTestJob.java # Task 3 - Test job for random
-│   ├── DetailedFraudDetector.java       # Task 4 - Enhanced fraud detector
-│   ├── DetailedFraudDetectorTestJob.java # Task 4 - Test job for fraud detector
-│   ├── DetailedFraudDetectionJob.java   # Task 5 - Complete integrated system
+│   ├── DetailedFraudDetector.java       # Task 4 - Enhanced fraud detector ✅
+│   ├── DetailedFraudDetectorTestJob.java # Task 4 - Test job for fraud detector ✅
+│   ├── DetailedFraudDetectorNoAlertTestJob.java # Task 4 - Test job (no alert case) ✅
+│   ├── DetailedFraudDetectorComprehensiveTest.java # Task 4 - Comprehensive test ✅
+│   ├── DetailedFraudDetectorLogicTest.java # Task 4 - Logic verification test ✅
+│   ├── DetailedFraudDetectionJob.java   # Task 5 - Complete integrated system ✅
 │   ├── FraudDetectionJob.java           # Original job
 │   └── FraudDetector.java               # Original detector
 ├── src/main/resources/
@@ -161,8 +164,19 @@ Create a DetailedFraudDetector class that implements enhanced fraud detection lo
 4. **Debug Logging**: Detailed console output for monitoring fraud detection
 5. **State Cleanup**: Proper cleanup when fraud is detected or timer expires
 
-### Test Job
+### Test Jobs
 - **DetailedFraudDetectorTestJob.java**: Test job using hand-crafted data to verify fraud detection logic
+- **DetailedFraudDetectorNoAlertTestJob.java**: Test job demonstrating cases that should NOT generate alerts
+- **DetailedFraudDetectorComprehensiveTest.java**: Comprehensive test with multiple scenarios
+- **DetailedFraudDetectorLogicTest.java**: Simple logic test without Flink dependencies
+
+### Testing Results
+All test cases pass successfully:
+- ✅ Same zip code → Generates alert
+- ✅ Different zip code → No alert
+- ✅ Amount too small → No alert
+- ✅ First transaction too large → No alert
+- ✅ Assignment example (3 transactions) → Generates alert
 
 ---
 
@@ -186,6 +200,13 @@ Create a DetailedFraudDetectionJob class that integrates all the new classes (De
 - **Real-time Processing**: Continuous stream processing of transactions
 - **Location-based Detection**: Uses zip code information for enhanced accuracy
 - **Comprehensive Logging**: Detailed fraud alerts with all relevant information
+- **Random Data Generation**: Uses DetailedTransactionSource for realistic testing
+- **Account-based Processing**: Proper state management per account
+
+### Testing
+- **Main Job**: `DetailedFraudDetectionJob.java` - Complete system with random data
+- **Expected Behavior**: Should generate fraud alerts within 2 minutes of runtime
+- **Alert Criteria**: Small transaction (< $10) followed by large transaction (≥ $500) in same zip code
 
 ---
 
@@ -296,6 +317,12 @@ timeout 120s java --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED 
 
 ### Task 4: DetailedFraudDetector Class
 
+#### Test DetailedFraudDetector Logic (Simple Test)
+```bash
+cd /Users/abhilashasenapati/Repos/HW4_532/frauddetection
+java -cp target/classes spendreport.DetailedFraudDetectorLogicTest
+```
+
 #### Test DetailedFraudDetector with Hand-crafted Data
 ```bash
 cd /home/anandyala/acads/532/HW-4/frauddetection
@@ -393,7 +420,50 @@ Random Transaction: DetailedTransaction{accountId=1, amount=70.44, timestamp=176
 Random Transaction: DetailedTransaction{accountId=5, amount=728.82, timestamp=1761593900791, zipCode='01003'}
 ```
 
-### DetailedFraudDetector Output (Task 4)
+### DetailedFraudDetector Logic Test Output (Task 4)
+```
+=== DetailedFraudDetector Logic Test ===
+
+Test Case 1: Same zip code - SHOULD generate alert
+  Small: Account 1, $5.0, Zip 01003
+  Large: Account 1, $750.0, Zip 01003
+  Result: 🚨 ALERT
+  Logic: Small=true, Large=true, SameAccount=true, SameZip=true
+
+Test Case 2: Different zip code - SHOULD NOT generate alert
+  Small: Account 2, $3.0, Zip 01003
+  Large: Account 2, $600.0, Zip 02115
+  Result: ✅ No Alert
+  Logic: Small=true, Large=true, SameAccount=true, SameZip=false
+
+Test Case 3: Amount too small - SHOULD NOT generate alert
+  Small: Account 3, $2.0, Zip 01003
+  Large: Account 3, $400.0, Zip 01003
+  Result: ✅ No Alert
+  Logic: Small=true, Large=false, SameAccount=true, SameZip=true
+
+Test Case 4: First transaction too large - SHOULD NOT generate alert
+  Small: Account 4, $15.0, Zip 01003
+  Large: Account 4, $600.0, Zip 01003
+  Result: ✅ No Alert
+  Logic: Small=false, Large=true, SameAccount=true, SameZip=true
+
+Test Case 5: Assignment example - SHOULD generate alert
+  Transaction sequence:
+  1. Account 1: $0.05, Zip 01003 (small transaction)
+  2. Account 2: $50, Zip 02115 (medium transaction, different account/zip)
+  3. Account 1: $1000, Zip 01003 (large transaction, same account/zip as #1)
+  First: Account 1, $0.05, Zip 01003
+  Second: Account 2, $50.0, Zip 02115
+  Third: Account 1, $1000.0, Zip 01003
+  Result: 🚨 ALERT
+  Logic: FirstSmall=true, ThirdLarge=true, SameAccount=true, SameZip=true
+  Note: Second transaction (Account 2) is ignored as it's a different account
+
+=== Test Complete ===
+```
+
+### DetailedFraudDetector Flink Output (Task 4)
 ```
 Small transaction detected - Account: 1, Amount: $0.5, Zip: 01003, Timestamp: 1000
 FRAUD DETECTED - Account: 1, Small Amount: $0.5, Large Amount: $750.0, Zip: 01003
@@ -471,38 +541,3 @@ mvn dependency:tree
 mvn exec:java -Dexec.mainClass="spendreport.FraudDetectionJob" -X
 ```
 
----
-
-## Next Steps
-
-The project is ready for the remaining tasks:
-- **Task 4**: Create DetailedFraudDetector with zip code logic
-- **Task 5**: Create DetailedFraudDetectionJob using new classes
-
----
-
-## Technical Notes
-
-### Dependencies
-- Apache Flink 1.17.2 (DataStream API)
-- slf4j (logging facade)
-- Log4j2 (logging implementation)
-- Maven (build management)
-
-### Development Environment
-- Java 25 (OpenJDK)
-- Maven 3.x
-- IntelliJ IDEA IDE
-- Linux environment
-
-### Code Quality
-- All classes follow Java naming conventions
-- Comprehensive JavaDoc documentation
-- Proper error handling and null safety
-- Clean, maintainable code structure
-
----
-
-**Project Status**: All Tasks Complete ✅  
-**Tasks Completed**: 1, 2, 3, 4, 5  
-**Last Updated**: October 27, 2025

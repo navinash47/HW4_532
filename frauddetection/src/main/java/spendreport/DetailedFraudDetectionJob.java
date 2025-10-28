@@ -21,40 +21,24 @@ package spendreport;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
-/**
- * DetailedFraudDetectionJob class that implements the complete enhanced fraud detection system.
- * This job integrates all the new classes (DetailedTransaction, DetailedAlert, DetailedTransactionSource, DetailedFraudDetector)
- * to provide location-based fraud detection using zip code information.
- * 
- * The job detects fraudulent transactions based on the pattern:
- * - Small transaction (< $10) followed by large transaction (>= $500)
- * - Both transactions from the same account
- * - Both transactions in the same zip code
- * - Within a 1-minute time window
- */
 public class DetailedFraudDetectionJob {
     
     public static void main(String[] args) throws Exception {
-        // Create the Flink execution environment
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        
-        // Create data stream from DetailedTransactionSource
+
         DataStream<DetailedTransaction> transactions = env
             .addSource(new DetailedTransactionSource())
             .name("detailed-transactions");
-        
-        // Apply fraud detection logic using DetailedFraudDetector
+
         DataStream<DetailedAlert> alerts = transactions
             .keyBy(DetailedTransaction::getAccountId)
             .process(new DetailedFraudDetector())
             .name("detailed-fraud-detector");
-        
-        // Send alerts to DetailedAlertSink for logging
+
         alerts
             .addSink(new DetailedAlertSink())
-            .name("detailed-alert-sink");
-        
-        // Execute the job
+            .name("send-detailed-alerts");
+
         env.execute("Detailed Fraud Detection");
     }
 }

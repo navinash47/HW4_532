@@ -21,27 +21,27 @@ package spendreport;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
-public class DetailedFraudDetectorTestJob {
+public class DetailedFraudDetectorNoAlertTestJob {
     
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-        DetailedTransaction testTransaction1 = new DetailedTransaction(1L, 5.0, 1000L, "01003"); 
-        DetailedTransaction testTransaction2 = new DetailedTransaction(2L, 50.0, 2000L, "02115"); 
-        DetailedTransaction testTransaction3 = new DetailedTransaction(1L, 1000.0, 3000L, "01003"); 
+        DetailedTransaction testTransaction1 = new DetailedTransaction(1L, 2.0, 1000L, "01003"); 
+        DetailedTransaction testTransaction2 = new DetailedTransaction(2L, 501.0, 2000L, "02115"); 
+        DetailedTransaction testTransaction3 = new DetailedTransaction(1L, 1000.0, 3000L, "78712"); 
         
         DataStream<DetailedTransaction> transactions = env.fromElements(testTransaction1, testTransaction2, testTransaction3)
-            .name("test-transactions");
+            .name("test-transactions-no-alert");
 
         DataStream<DetailedAlert> alerts = transactions
             .keyBy(DetailedTransaction::getAccountId)
             .process(new DetailedFraudDetector())
-            .name("test-fraud-detector");
+            .name("test-fraud-detector-no-alert");
 
         alerts
             .addSink(new DetailedAlertSink())
-            .name("test-alert-sink");
+            .name("test-alert-sink-no-alert");
 
-        env.execute("Detailed Fraud Detection Test");
+        env.execute("Detailed Fraud Detection No Alert Test");
     }
 }
