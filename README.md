@@ -1,6 +1,6 @@
-# Advanced Fraud Detection Algorithm - Tasks 1, 2, 3, 4, 5 ✅
+# Advanced Fraud Detection Algorithm - Tasks 1, 2, 3, 4, 5 - HW 4
 
-This project extends the basic Flink DataStream API fraud detection tutorial by adding location-based fraud detection using zip code information. All tasks have been completed successfully.
+This Assignment extends the basic Flink DataStream API fraud detection tutorial by adding location-based fraud detection using zip code information. All tasks have been completed successfully.
 
 ## Project Overview
 
@@ -18,12 +18,12 @@ frauddetection/
 │   ├── DetailedTransactionSourceTest.java # Task 3 - Hand-crafted test source
 │   ├── DetailedTransactionSourceTestJob.java # Task 3 - Test job for hand-crafted
 │   ├── DetailedTransactionSourceRandomTestJob.java # Task 3 - Test job for random
-│   ├── DetailedFraudDetector.java       # Task 4 - Enhanced fraud detector ✅
-│   ├── DetailedFraudDetectorTestJob.java # Task 4 - Test job for fraud detector ✅
-│   ├── DetailedFraudDetectorNoAlertTestJob.java # Task 4 - Test job (no alert case) ✅
-│   ├── DetailedFraudDetectorComprehensiveTest.java # Task 4 - Comprehensive test ✅
-│   ├── DetailedFraudDetectorLogicTest.java # Task 4 - Logic verification test ✅
-│   ├── DetailedFraudDetectionJob.java   # Task 5 - Complete integrated system ✅
+│   ├── DetailedFraudDetector.java       # Task 4 - Enhanced fraud detector
+│   ├── DetailedFraudDetectorTestJob.java # Task 4 - Test job for fraud detector
+│   ├── DetailedFraudDetectorNoAlertTestJob.java # Task 4 - Test job (no alert case)
+│   ├── DetailedFraudDetectorComprehensiveTest.java # Task 4 - Comprehensive test
+│   ├── DetailedFraudDetectorLogicTest.java # Task 4 - Logic verification test
+│   ├── DetailedFraudDetectionJob.java   # Task 5 - Complete integrated system
 │   ├── FraudDetectionJob.java           # Original job
 │   └── FraudDetector.java               # Original detector
 ├── src/main/resources/
@@ -172,11 +172,11 @@ Create a DetailedFraudDetector class that implements enhanced fraud detection lo
 
 ### Testing Results
 All test cases pass successfully:
-- ✅ Same zip code → Generates alert
-- ✅ Different zip code → No alert
-- ✅ Amount too small → No alert
-- ✅ First transaction too large → No alert
-- ✅ Assignment example (3 transactions) → Generates alert
+- Same zip code → Generates alert
+- Different zip code → No alert
+- Amount too small → No alert
+- First transaction too large → No alert
+- Assignment example (3 transactions) → Generates alert
 
 ---
 
@@ -427,25 +427,25 @@ Random Transaction: DetailedTransaction{accountId=5, amount=728.82, timestamp=17
 Test Case 1: Same zip code - SHOULD generate alert
   Small: Account 1, $5.0, Zip 01003
   Large: Account 1, $750.0, Zip 01003
-  Result: 🚨 ALERT
+  Result: ALERT
   Logic: Small=true, Large=true, SameAccount=true, SameZip=true
 
 Test Case 2: Different zip code - SHOULD NOT generate alert
   Small: Account 2, $3.0, Zip 01003
   Large: Account 2, $600.0, Zip 02115
-  Result: ✅ No Alert
+  Result: No Alert
   Logic: Small=true, Large=true, SameAccount=true, SameZip=false
 
 Test Case 3: Amount too small - SHOULD NOT generate alert
   Small: Account 3, $2.0, Zip 01003
   Large: Account 3, $400.0, Zip 01003
-  Result: ✅ No Alert
+  Result: No Alert
   Logic: Small=true, Large=false, SameAccount=true, SameZip=true
 
 Test Case 4: First transaction too large - SHOULD NOT generate alert
   Small: Account 4, $15.0, Zip 01003
   Large: Account 4, $600.0, Zip 01003
-  Result: ✅ No Alert
+  Result: No Alert
   Logic: Small=false, Large=true, SameAccount=true, SameZip=true
 
 Test Case 5: Assignment example - SHOULD generate alert
@@ -456,7 +456,7 @@ Test Case 5: Assignment example - SHOULD generate alert
   First: Account 1, $0.05, Zip 01003
   Second: Account 2, $50.0, Zip 02115
   Third: Account 1, $1000.0, Zip 01003
-  Result: 🚨 ALERT
+  Result: ALERT
   Logic: FirstSmall=true, ThirdLarge=true, SameAccount=true, SameZip=true
   Note: Second transaction (Account 2) is ignored as it's a different account
 
